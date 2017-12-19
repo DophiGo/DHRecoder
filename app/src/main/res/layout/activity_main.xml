@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f1f1f1"
+    tools:context="com.example.user.qrrecoder.activity.MainActivity">
+
+    <include
+        android:id="@+id/base_toolbar"
+        layout="@layout/base_toolbar" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_info"
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/base_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tx_userinfo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="5dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_logout"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_centerInParent="true"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_logout" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btn_scan"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_below="@+id/card_info"
+        android:layout_centerInParent="true"
+        android:background="@drawable/selecter_scan"
+        android:text="@string/start_scan"
+        android:textColor="@color/color_ffffff"
+        android:textSize="18sp"
+        android:transitionName="@string/share_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_info" />
+
+    <TextView
+        android:id="@+id/tx_scanresult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autoLink="all"
+        android:padding="15dp"
+        android:text="@string/upload_record"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_scan"
+        app:layout_constraintVertical_bias="0.3" />
+
+</android.support.constraint.ConstraintLayout>

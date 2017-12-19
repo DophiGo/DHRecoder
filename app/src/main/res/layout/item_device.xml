@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tx_number"
+        android:layout_width="0dp"
+        android:text="@string/number"
+        style="@style/style_text_item"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tx_deviceid"
+        android:layout_height="0dp" />
+    <TextView
+        android:id="@+id/tx_deviceid"
+        android:layout_width="0dp"
+        android:text="@string/device_id"
+        style="@style/style_text_item"
+        app:layout_constraintHorizontal_weight="0.8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tx_number"
+        app:layout_constraintRight_toLeftOf="@+id/tx_recodertime"
+        android:layout_height="0dp" />
+    <TextView
+        android:id="@+id/tx_recodertime"
+        android:layout_width="0dp"
+        android:text="@string/record_time"
+        style="@style/style_text_item"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tx_deviceid"
+        app:layout_constraintRight_toLeftOf="@+id/tx_serverstate"
+        android:layout_height="0dp" />
+    <TextView
+        android:id="@+id/tx_serverstate"
+        android:layout_width="0dp"
+        android:text="@string/upload_state"
+        style="@style/style_text_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tx_recodertime"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_weight="0.8"
+        android:layout_height="0dp" />
+
+</android.support.constraint.ConstraintLayout>
