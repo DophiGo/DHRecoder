@@ -3,12 +3,16 @@ package com.example.user.qrrecoder.http.retrofit;
 import com.example.user.qrrecoder.app.MyApp;
 import com.example.user.qrrecoder.entity.UploadRecords;
 import com.example.user.qrrecoder.http.Enty.HttpResults;
+import com.example.user.qrrecoder.http.Enty.Info;
 import com.example.user.qrrecoder.http.Enty.LoginResult;
 import com.example.user.qrrecoder.http.api.ApiService;
+import com.example.user.qrrecoder.utils.MD5;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+
+import java.security.MessageDigest;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,8 +31,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class HttpSend {
-//    private final static String BASEURL="http://39.108.193.125:81/psp/ja/v1/";
-    private final static String BASEURL="http://income.vas.gwell.cc:9898/psp/ja/v1/";
+    //APP地址
+    private final static String BASEURL="http://oss.zhiduodev.com/oss/app/operator/";
+    //解绑地址
+    private final static String BASEURL_UNBIND="http://api.zhiduodev.com/trader/unbind/";
     private static class HtpSendHolder{
         public static final HttpSend INSTENCE=new HttpSend();
     }
@@ -44,7 +50,7 @@ public class HttpSend {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // Log信息拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);//这里可以选择拦截级别
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这里可以选择拦截级别
         //设置 Debug Log 模式
         // init cookie manager
         if(cookieJar==null){
@@ -62,7 +68,7 @@ public class HttpSend {
                 .build();
 
         ApiService movieService = retrofit.create(ApiService.class);
-
+        userPwd=new MD5().getMD5ofStr(userPwd);
         movieService.login(userName, userPwd)
                 .map(new HttpResultFunc())
                 .subscribeOn(Schedulers.io())
@@ -122,6 +128,35 @@ public class HttpSend {
 
         ApiService uploadRecord = retrofit.create(ApiService.class);
         uploadRecord.logout()
+                .map(new HttpResultFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getInfo(String token,Observer<Info> observer){
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        // Log信息拦截器
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这里可以选择拦截级别
+        //设置 Debug Log 模式
+        // init cookie manager
+        if(cookieJar==null){
+            cookieJar =
+                    new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MyApp.app));
+        }
+        builder.addInterceptor(loggingInterceptor)
+                .cookieJar(cookieJar);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASEURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(builder.build())
+                .build();
+
+        ApiService movieService = retrofit.create(ApiService.class);
+        movieService.getUserInfo(token)
                 .map(new HttpResultFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

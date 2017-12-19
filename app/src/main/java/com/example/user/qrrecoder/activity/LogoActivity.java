@@ -54,7 +54,7 @@ public class LogoActivity extends BaseActivity {
     }
 
     private void initUI() {
-        txVersion.setText(AppUtils.getAppVersion());
+       // txVersion.setText(AppUtils.getAppVersion());
     }
 
     private void toAPP() {

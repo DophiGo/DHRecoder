@@ -12,12 +12,12 @@ import io.reactivex.functions.Function;
  * @param <T> Subscriber真正需要的数据类型，也就是Data部分的数据类型
  */
 
-public class HttpResultFunc<T > implements Function<HttpResults<T>,T> {
+public class HttpResultFunc<T> implements Function<HttpResults<T>,T> {
     @Override
     public T apply(HttpResults<T> tHttpResults) throws Exception {
         Log.e("dxsTest","tHttpResults:"+tHttpResults);
-        if (!tHttpResults.getError_code().equals("0")) {
-            throw new ApiException(tHttpResults.getError_code());
+        if (!tHttpResults.getCode().equals("0")) {
+            throw new ApiException(tHttpResults.getCode());
         }
         return tHttpResults.getData();
     }

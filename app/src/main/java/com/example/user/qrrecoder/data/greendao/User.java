@@ -20,22 +20,27 @@ public class User {
     @Index(unique = true)
     private int userid;
     private String acount;
-    private String username;
     private String fname;
     private String userpwd;
-    private String email;
-    private int sessionid;
-    @Generated(hash = 1071991224)
-    public User(Long id, int userid, String acount, String username, String fname,
-            String userpwd, String email, int sessionid) {
+    private String tel;
+    private String agent;
+    private String address;
+    private String agenttel;
+    private String token;
+    @Generated(hash = 1766897838)
+    public User(Long id, int userid, String acount, String fname, String userpwd,
+            String tel, String agent, String address, String agenttel,
+            String token) {
         this.id = id;
         this.userid = userid;
         this.acount = acount;
-        this.username = username;
         this.fname = fname;
         this.userpwd = userpwd;
-        this.email = email;
-        this.sessionid = sessionid;
+        this.tel = tel;
+        this.agent = agent;
+        this.address = address;
+        this.agenttel = agenttel;
+        this.token = token;
     }
     @Generated(hash = 586692638)
     public User() {
@@ -58,12 +63,6 @@ public class User {
     public void setAcount(String acount) {
         this.acount = acount;
     }
-    public String getUsername() {
-        return this.username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
     public String getFname() {
         return this.fname;
     }
@@ -76,17 +75,35 @@ public class User {
     public void setUserpwd(String userpwd) {
         this.userpwd = userpwd;
     }
-    public String getEmail() {
-        return this.email;
+    public String getTel() {
+        return this.tel;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTel(String tel) {
+        this.tel = tel;
     }
-    public int getSessionid() {
-        return this.sessionid;
+    public String getAgent() {
+        return this.agent;
     }
-    public void setSessionid(int sessionid) {
-        this.sessionid = sessionid;
+    public void setAgent(String agent) {
+        this.agent = agent;
+    }
+    public String getAddress() {
+        return this.address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    public String getAgenttel() {
+        return this.agenttel;
+    }
+    public void setAgenttel(String agenttel) {
+        this.agenttel = agenttel;
+    }
+    public String getToken() {
+        return this.token;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
    
 }

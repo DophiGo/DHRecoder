@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.user.qrrecoder.R;
 import com.example.user.qrrecoder.app.MyApp;
@@ -37,9 +35,7 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     @BindView(R.id.zbarview)
     ZBarView zbarview;
     @BindView(R.id.btn_stop)
-    Button btnStop;
-    @BindView(R.id.tx_scan_number)
-    TextView txScanNumber;
+    ImageView btnStop;
     private User user;
 
     @Override
@@ -49,15 +45,14 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
         ButterKnife.bind(this);
         initZbar();
         user = MyApp.getActiveUser();
-        if (user==null) {
-            ToastUtils.ShowError(this,getString(R.string.user_info_error),1500,true);
+        if (user == null) {
+            ToastUtils.ShowError(this, getString(R.string.user_info_error), 1500, true);
             toLogin();
         }
     }
 
     private void initZbar() {
         zbarview.setDelegate(this);
-        changeCount(0);
     }
 
     private void starCamer() {
@@ -72,17 +67,7 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     public void onScanQRCodeSuccess(String result) {
         zbarview.startSpotDelay(800);
         try {
-            String deviceInfo = DeviceUtils.getDeviceinfo(result);
-            if (deviceInfo != null) {
-                DeviceItem item = CreateDeviceItem(deviceInfo);
-                DBUtils.getDeviceItemService().saveOrUpdate(item);
-                ToastUtils.ShowScanSuccess(this, getToastContent(item));
-                changeCount(getUnUploadRecord());
-                ding();
-                vibrate();
-            } else {
-                throw new IllegalArgumentException("deviceInfo is null");
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             //二维码不正确
@@ -115,10 +100,6 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     @Override
     public void onScanQRCodeOpenCameraError() {
         ELog.dxs("打开相机出错");
-    }
-
-    private void changeCount(long count) {
-        txScanNumber.setText(String.valueOf(count));
     }
 
     private String getToastContent(DeviceItem item) {
@@ -168,22 +149,18 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
         super.onDestroy();
     }
 
-    @OnClick({R.id.btn_stop, R.id.tx_scan_number})
-    public void onViewClicked(View view) {
-        Intent list = new Intent(this, ScanResultActivity.class);
-        startActivityForResult(list, 1);
-        if (view.getId() == R.id.btn_stop) {
-            finish();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                changeCount(0);
+
             }
         }
+    }
+
+    @OnClick(R.id.btn_stop)
+    public void onViewClicked() {
+        finish();
     }
 }

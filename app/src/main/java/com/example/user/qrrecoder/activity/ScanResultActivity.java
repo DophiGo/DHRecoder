@@ -209,9 +209,6 @@ public class ScanResultActivity extends BaseActivity {
                 dialog.dismiss();
             }
         };
-
-        UploadRecords records = new UploadRecords(user.getAcount(),user.getSessionid(), deviceItems);
-        HttpSend.getInstence().uploadRecord(records, observer);
     }
 
     private void toScanActivity(){

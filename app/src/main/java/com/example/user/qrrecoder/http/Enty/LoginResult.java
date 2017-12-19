@@ -5,35 +5,16 @@ package com.example.user.qrrecoder.http.Enty;
  */
 
 public class LoginResult extends HttpResults {
-    private int fcustomerid; //用户所属客户ID
-    private int fidentity; //用户所属身份 2:方案商、3:工厂、4:代理商
-    private String fusername; //用户名
+    private String faccount; //用户所属客户ID
     private String fname;  //客户名称
-    private String fmail;  //首次登陆用来发激活链接
-    private int sessionid;//会话ID
+    private String ftoken;//会话ID
 
-    public int getFcustomerid() {
-        return fcustomerid;
+    public String getFaccount() {
+        return faccount;
     }
 
-    public void setFcustomerid(int fcustomerid) {
-        this.fcustomerid = fcustomerid;
-    }
-
-    public int getFidentity() {
-        return fidentity;
-    }
-
-    public void setFidentity(int fidentity) {
-        this.fidentity = fidentity;
-    }
-
-    public String getFusername() {
-        return fusername;
-    }
-
-    public void setFusername(String fusername) {
-        this.fusername = fusername;
+    public void setFaccount(String faccount) {
+        this.faccount = faccount;
     }
 
     public String getFname() {
@@ -44,19 +25,20 @@ public class LoginResult extends HttpResults {
         this.fname = fname;
     }
 
-    public String getFmail() {
-        return fmail;
+    public String getFtoken() {
+        return ftoken;
     }
 
-    public void setFmail(String fmail) {
-        this.fmail = fmail;
+    public void setFtoken(String ftoken) {
+        this.ftoken = ftoken;
     }
 
-    public int getSessionid() {
-        return sessionid;
-    }
-
-    public void setSessionid(int sessionid) {
-        this.sessionid = sessionid;
+    @Override
+    public String toString() {
+        return "LoginResult{" +
+                "faccount='" + faccount + '\'' +
+                ", fname='" + fname + '\'' +
+                ", ftoken='" + ftoken + '\'' +
+                '}';
     }
 }

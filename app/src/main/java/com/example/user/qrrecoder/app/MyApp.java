@@ -36,7 +36,7 @@ public class MyApp extends Application {
 
     //Bugly初始化
     private void initBugly(){
-        Bugly.init(this, "abd986cd97", false);
+        Bugly.init(this, "0b829fd832", false);
     }
 
     //TODO 每次都查询数据库不太友好，可考虑在内存缓存，内存中没有的时候再去数据库查找

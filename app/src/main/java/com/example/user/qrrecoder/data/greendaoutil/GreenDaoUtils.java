@@ -13,7 +13,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
  */
 
 public class GreenDaoUtils {
-    private static final String DEFAULT_DB_NAME="qrcoder_db";
+    private static final String DEFAULT_DB_NAME="dh_qrcoder_db";
     private static String DB_NAME;
     private static Context mContext;
     private static DaoMaster daoMaster;

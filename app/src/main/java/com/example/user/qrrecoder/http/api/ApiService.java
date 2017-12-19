@@ -1,6 +1,7 @@
 package com.example.user.qrrecoder.http.api;
 
 import com.example.user.qrrecoder.http.Enty.HttpResults;
+import com.example.user.qrrecoder.http.Enty.Info;
 import com.example.user.qrrecoder.http.Enty.LoginResult;
 
 import io.reactivex.Observable;
@@ -17,14 +18,41 @@ import retrofit2.http.Query;
  */
 
 public interface ApiService {
-    @POST("app/login")
-    Observable<HttpResults<LoginResult>> login(@Query("account") String start, @Query("pwd") String pwd);
+    @POST("login")
+    Observable<HttpResults<LoginResult>> login(@Query("faccount") String start, @Query("fpwd") String pwd);
 
     @Headers({"Content-Type: application/json","Accept: application/json"})
-    @POST("app/scanrecord")
+    @POST("app/ascanrecord")
     Observable<HttpResults> uploadRecord(@Query("account") String account,@Query("sessionid") int sessionid,@Body RequestBody route);
 
     @GET("logout")
     Observable<HttpResults> logout();
+
+    @GET("info")
+    Observable<Info> getUserInfo(@Query("ftoken") String token);
+
+    @GET("resetPwd")
+    Observable<HttpResults> resetpwd(@Query("ftoken") String token);
+
+    @GET("auth")
+    Observable<HttpResults> auth(@Query("faccount") String account);
+
+    @POST("create")
+    Observable<HttpResults> create(@Query("faccount") String account,
+                                   @Query("fcode") String code,
+                                   @Query("fpwd") String pwd,
+                                   @Query("fname") String name,
+                                   @Query("ftel") String tel,
+                                   @Query("fagent") String agent,
+                                   @Query("faddr") String address,
+                                   @Query("fagenttel") String agenttel);
+
+    @GET("getCode")
+    Observable<HttpResults> getCode(@Query("faccount") String account);
+
+    @GET("forgetPwd")
+    Observable<HttpResults> forgetPwd(@Query("faccount") String account,
+                                      @Query("fcode") String code,
+                                      @Query("fnewPwd") String pwd);
 
 }

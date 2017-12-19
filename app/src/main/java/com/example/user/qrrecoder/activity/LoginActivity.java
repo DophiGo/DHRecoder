@@ -3,11 +3,11 @@ package com.example.user.qrrecoder.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
+import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.user.qrrecoder.R;
@@ -23,7 +23,6 @@ import com.example.user.qrrecoder.http.retrofit.HttpSend;
 import com.example.user.qrrecoder.utils.HttpErroStringUtils;
 import com.example.user.qrrecoder.utils.SharedPrefreUtils;
 import com.example.user.qrrecoder.utils.ToastUtils;
-import com.hdl.elog.ELog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -39,17 +38,17 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class LoginActivity extends BaseFullScreenActivity {
+
+    @BindView(R.id.et_username)
+    TextInputEditText etUsername;
+    @BindView(R.id.et_password)
+    TextInputEditText etPassword;
     @BindView(R.id.bt_go)
     Button btGo;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-    @BindView(R.id.cv)
-    CardView cv;
-    @BindView(R.id.et_username)
-    EditText etUsername;
-    @BindView(R.id.et_password)
-    EditText etPassword;
-
+    @BindView(R.id.tx_find_pwd)
+    TextView txFindPwd;
+    @BindView(R.id.tx_rigist)
+    TextView txRigist;
     private Context mContext;
     private String account = "";
     private String pwd = "";
@@ -75,14 +74,6 @@ public class LoginActivity extends BaseFullScreenActivity {
         }
     }
 
-    @OnClick(R.id.bt_go)
-    public void onViewClicked() {
-        createDialog();
-        if(checkParems()){
-            Login(account,pwd);
-        }
-    }
-
     private MaterialDialog.Builder builder;
 
     private void createDialog() {
@@ -93,22 +84,22 @@ public class LoginActivity extends BaseFullScreenActivity {
     }
 
     //检查用户输入
-    private boolean checkParems(){
-        account=etUsername.getText().toString().trim();
-        if(TextUtils.isEmpty(account)){
-            ToastUtils.ShowError(this,getString(R.string.user_account),APPConfig.Release.DEFAULT_TOAST_ERROR_TIME,true);
+    private boolean checkParems() {
+        account = etUsername.getText().toString().trim();
+        if (TextUtils.isEmpty(account)) {
+            ToastUtils.ShowError(this, getString(R.string.user_account), APPConfig.Release.DEFAULT_TOAST_ERROR_TIME, true);
             return false;
         }
 
-        pwd=etPassword.getText().toString().trim();
-        if(TextUtils.isEmpty(pwd)){
-            ToastUtils.ShowError(this,getString(R.string.user_pwd),APPConfig.Release.DEFAULT_TOAST_ERROR_TIME,true);
+        pwd = etPassword.getText().toString().trim();
+        if (TextUtils.isEmpty(pwd)) {
+            ToastUtils.ShowError(this, getString(R.string.user_pwd), APPConfig.Release.DEFAULT_TOAST_ERROR_TIME, true);
             return false;
         }
         return true;
     }
 
-    private void Login(final String account,final String pwd) {
+    private void Login(final String account, final String pwd) {
         final MaterialDialog dialog = builder.build();
         HttpSend.getInstence().login(account, pwd, new Observer<LoginResult>() {
             @Override
@@ -116,19 +107,15 @@ public class LoginActivity extends BaseFullScreenActivity {
                 dialog.show();
             }
 
-
             @Override
             public void onNext(LoginResult loginResult) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 User user = new User();
-                user.setAcount(account);
+                user.setAcount(loginResult.getFaccount());
                 user.setUserpwd(pwd);
-                user.setUserid(loginResult.getFidentity());
                 user.setFname(loginResult.getFname());
-                user.setUsername(loginResult.getFusername());
-                user.setEmail(loginResult.getFmail());
-                user.setSessionid(loginResult.getSessionid());
+                user.setToken(loginResult.getFtoken());
                 SharedPrefreUtils.getInstance().putStringData(mContext, SPKey.SP_ACTIVEUSER, user.getAcount());
                 SharedPrefreUtils.getInstance().putBooleanData(mContext, SPKey.SP_ISLOGIN, true);
                 DBUtils.getUserService().saveOrUpdate(user);
@@ -139,7 +126,7 @@ public class LoginActivity extends BaseFullScreenActivity {
             @Override
             public void onError(Throwable e) {
                 dialog.dismiss();
-                String toast= HttpErroStringUtils.getShowStringByException(e);
+                String toast = HttpErroStringUtils.getShowStringByException(e);
                 ToastUtils.ShowError(mContext, toast, APPConfig.Release.DEFAULT_TOAST_ERROR_TIME, true);
             }
 
@@ -148,5 +135,13 @@ public class LoginActivity extends BaseFullScreenActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    @OnClick(R.id.bt_go)
+    public void onViewClicked() {
+        createDialog();
+        if (checkParems()) {
+            Login(account, pwd);
+        }
     }
 }
