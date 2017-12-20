@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -137,11 +138,27 @@ public class LoginActivity extends BaseFullScreenActivity {
         });
     }
 
-    @OnClick(R.id.bt_go)
-    public void onViewClicked() {
-        createDialog();
-        if (checkParems()) {
-            Login(account, pwd);
+    @OnClick({R.id.bt_go,R.id.tx_rigist,R.id.tx_find_pwd})
+    public void onViewClicked(View view) {
+        if(view.getId()==R.id.bt_go){
+            createDialog();
+            if (checkParems()) {
+                Login(account, pwd);
+            }
+        }else if(view.getId()==R.id.tx_rigist){
+            toRigist();
+        }else if(view.getId()==R.id.tx_find_pwd){
+            toFindBackPwd();
         }
+    }
+
+    private void toRigist(){
+        Intent intent=new Intent(this,RegistActivity.class);
+        startActivity(intent);
+    }
+
+    private void toFindBackPwd(){
+        Intent intent=new Intent(this,FindBackPwdActivity.class);
+        startActivity(intent);
     }
 }

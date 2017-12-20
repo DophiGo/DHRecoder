@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_userinfo:
-                        Log.e("dxsTest", "menuItem:" + "nav_userinfo");
+                        toUserInfo();
                         break;
                     case R.id.nav_changepwd:
                         Log.e("dxsTest", "menuItem:" + "nav_changepwd");
@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity {
     public void onUserLoginSuccess(UserAction userAction) {
         updateUiInfo(userAction.getUser());
         Log.e("dxsTest", "onUserLoginSuccess:" + userAction.getUser().toString());
-        //getUserInfo(userAction.getUser());
+//        getUserInfo(userAction.getUser());
     }
 
     @OnClick({R.id.btn_scan})
@@ -195,6 +195,12 @@ public class MainActivity extends BaseActivity {
         startActivity(list);
     }
 
+    //我的信息
+    private void toUserInfo(){
+        Intent info = new Intent(this, UserInfoActivity.class);
+        startActivity(info);
+    }
+
     private void getUserInfo(final User user) {
         HttpSend.getInstence().getInfo(user.getToken(), new Observer<Info>() {
             @Override
@@ -203,12 +209,12 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(Info info) {
-                user.setFname(info.getFname());
-                user.setAgent(info.getFagent());
-                user.setAgenttel(info.getFagenttel());
-                user.setTel(info.getFtel());
-                user.setAddress(info.getFaddr());
+            public void onNext(Info realInfo) {
+                user.setFname(realInfo.getFname());
+                user.setAgent(realInfo.getFagent());
+                user.setAgenttel(realInfo.getFagenttel());
+                user.setTel(realInfo.getFtel());
+                user.setAddress(realInfo.getFaddr());
                 DBUtils.getUserService().saveOrUpdate(user);
             }
 
