@@ -57,7 +57,6 @@ public class ScanResultActivity extends BaseActivity {
     private MultiTypeAdapter adapter;
     private Items items;
     private List<DeviceItem> deviceItems;
-    private Context mContext;
 
     private User user;
 
@@ -65,7 +64,6 @@ public class ScanResultActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        mContext = this;
         user= MyApp.getActiveUser();
         if(user==null){
             ToastUtils.ShowError(this,getString(R.string.user_info_error),1500,true);
@@ -149,7 +147,7 @@ public class ScanResultActivity extends BaseActivity {
     }
 
     private void showSuccessDialog(String successCounts){
-        final String toast = String.format(mContext.getString(R.string.upload_success_tip), successCounts);
+        final String toast = String.format(context.getString(R.string.upload_success_tip), successCounts);
         new MaterialDialog.Builder(this)
                 .title(R.string.upload_success)
                 .content(toast)
@@ -177,7 +175,7 @@ public class ScanResultActivity extends BaseActivity {
     @OnClick(R.id.fab_upload)
     public void onViewClicked() {
         if (deviceItems == null || deviceItems.size() <= 0) {
-            ToastUtils.ShowError(mContext, mContext.getString(R.string.scanrecord_empty), 1500, false);
+            ToastUtils.ShowError(context, context.getString(R.string.scanrecord_empty), 1500, false);
             return;
         }
         createDialog();
@@ -194,14 +192,14 @@ public class ScanResultActivity extends BaseActivity {
                 checkItemEmpty();
                 setResult(RESULT_OK);
                 showSuccessDialog(stringHttpResults);
-                ToastUtils.ShowSuccess(mContext, getString(R.string.upload_success));
+                ToastUtils.ShowSuccess(context, getString(R.string.upload_success));
             }
 
             @Override
             public void onError(Throwable e) {
                 dialog.dismiss();
                 String toast= HttpErroStringUtils.getShowStringByException(e);
-                ToastUtils.ShowError(mContext, toast, 1500, false);
+                ToastUtils.ShowError(context, toast, 1500, false);
             }
 
             @Override

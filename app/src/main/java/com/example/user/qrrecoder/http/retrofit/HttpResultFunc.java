@@ -15,7 +15,6 @@ import io.reactivex.functions.Function;
 public class HttpResultFunc<T> implements Function<HttpResults<T>,T> {
     @Override
     public T apply(HttpResults<T> tHttpResults) throws Exception {
-        Log.e("dxsTest","tHttpResults:"+tHttpResults);
         if (!tHttpResults.getCode().equals("0")) {
             throw new ApiException(tHttpResults.getCode());
         }

@@ -19,13 +19,13 @@
     <string name="upload_record">查看扫码记录</string>
     <string name="scanrecord_empty">没有未上传的扫码记录</string>
     <string name="error_qrillegl">二维码不正确</string>
-    <string name="logout_tips">是否注销本次登录?</string>
+    <string name="logout_tips">确定退出登陆?</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="back">返回</string>
     <string name="scan">继续扫码</string>
     <string name="upload_success">上传成功</string>
-    <string name="user_info_error">用户信息异常，请重新登陆</string>
+    <string name="user_info_error">您已在别处登录，请重新登录</string>
     <string name="user_account">输入用户名</string>
     <string name="user_pwd">输入密码</string>
     <string name="http_er">系统异常</string>
@@ -75,9 +75,17 @@
     <string name="http_er_801011005">密码错误</string>
     <string name="http_er_801011006">该邮箱已注册</string>
     <string name="http_er_801011007">未获取验证码或已过期</string>
+    <string name="http_er_801011008">验证码错误</string>
     <string name="http_er_801011009">该邮箱账号不存在</string>
     <string name="http_er_801011010">账号或密码错误</string>
     <string name="http_er_801011011">邮件发送失败</string>
     <string name="http_er_801011012">升级包信息不存在</string>
+    <string name="http_er_801003007">设备未绑定</string>
     <string name="pwd_format">密码必须同时包含数字和字母，长度在6-18位</string>
+    <string name="opration_success">操作成功</string>
+    <string name="pwd_not">两次输入的密码不一致</string>
+    <string name="reset_pwd_success">您的密码修改成功，请您重新登录</string>
+    <string name="unbind">解绑</string>
+    <string name="unbind_tips">设备序列号为：%s，是否要解绑这台设备？</string>
+    <string name="unbind_success">序列号为 %s 的设备解绑成功</string>
 </resources>

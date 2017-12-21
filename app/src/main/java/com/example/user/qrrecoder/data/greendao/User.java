@@ -9,13 +9,15 @@ import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by USER on 2017/11/7.
  */
 @Entity
-public class User {
+public class User implements Serializable {
+    static final long serialVersionUID = 42L;
     @Id private Long id;
     @Index(unique = true)
     private int userid;

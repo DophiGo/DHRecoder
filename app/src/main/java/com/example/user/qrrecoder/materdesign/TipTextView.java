@@ -45,6 +45,15 @@ public class TipTextView extends AppCompatTextView {
         initRect(MeasureSpec.getSize(widthMeasureSpec),MeasureSpec.getSize(heightMeasureSpec));
     }
 
+    /**
+     * 更新文本
+     * @param text
+     */
+    public void updateText(CharSequence text){
+        setText(text);
+        postInvalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

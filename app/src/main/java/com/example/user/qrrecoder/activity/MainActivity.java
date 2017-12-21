@@ -28,8 +28,10 @@ import com.example.user.qrrecoder.eventbus.eventbusaction.UserAction;
 import com.example.user.qrrecoder.http.Enty.HttpResults;
 import com.example.user.qrrecoder.http.Enty.Info;
 import com.example.user.qrrecoder.http.Enty.LoginResult;
+import com.example.user.qrrecoder.http.retrofit.BaseObserver;
 import com.example.user.qrrecoder.http.retrofit.HttpSend;
 import com.example.user.qrrecoder.utils.HttpErroStringUtils;
+import com.example.user.qrrecoder.utils.IntentUtis;
 import com.example.user.qrrecoder.utils.SharedPrefreUtils;
 import com.example.user.qrrecoder.utils.SizeUtils;
 import com.example.user.qrrecoder.utils.ToastUtils;
@@ -61,10 +63,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
         mContext = this;
         getWindow().setReturnTransition(new Fade().setDuration(300));
-
         initNaviView();
     }
 
@@ -89,13 +89,13 @@ public class MainActivity extends BaseActivity {
                         toUserInfo();
                         break;
                     case R.id.nav_changepwd:
-                        Log.e("dxsTest", "menuItem:" + "nav_changepwd");
+                        toResetPwd();
                         break;
                     case R.id.nav_share:
-                        Log.e("dxsTest", "menuItem:" + "nav_share");
+                        IntentUtis.toWebBroser(APPConfig.Release.DEFAULT_DOWNLOAD_URL);
                         break;
                     case R.id.nav_about_app:
-                        Log.e("dxsTest", "menuItem:" + "nav_about_app");
+                        toAbout();
                         break;
                 }
                 //menuItem.setChecked(true);//点击了把它设为选中状态
@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity {
     public void onUserLoginSuccess(UserAction userAction) {
         updateUiInfo(userAction.getUser());
         Log.e("dxsTest", "onUserLoginSuccess:" + userAction.getUser().toString());
-//        getUserInfo(userAction.getUser());
+        getUserInfo(userAction.getUser());
     }
 
     @OnClick({R.id.btn_scan})
@@ -172,7 +172,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     private void RequirePermission() {
@@ -185,7 +184,6 @@ public class MainActivity extends BaseActivity {
                         ELog.dxs("aBoolean:" + aBoolean);
                         Intent scan = new Intent(MainActivity.this, ZbarActivity.class);
                         startActivity(scan);
-//                        Login();
                     }
                 });
     }
@@ -201,31 +199,36 @@ public class MainActivity extends BaseActivity {
         startActivity(info);
     }
 
+    //关于版本
+    private void toAbout(){
+        Intent about = new Intent(this, AboutActivity.class);
+        startActivity(about);
+    }
+
+    //修改密码
+    private void toResetPwd(){
+        Intent about = new Intent(this, ResetPwdActivity.class);
+        startActivity(about);
+    }
+
     private void getUserInfo(final User user) {
-        HttpSend.getInstence().getInfo(user.getToken(), new Observer<Info>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
+        HttpSend.getInstence().getInfo(user.getToken(), new BaseObserver<Info>() {
 
             @Override
-            public void onNext(Info realInfo) {
-                user.setFname(realInfo.getFname());
-                user.setAgent(realInfo.getFagent());
-                user.setAgenttel(realInfo.getFagenttel());
-                user.setTel(realInfo.getFtel());
-                user.setAddress(realInfo.getFaddr());
+            public void onSuccess(Info info) {
+                user.setFname(info.getFname());
+                user.setAgent(info.getFagent());
+                user.setAgenttel(info.getFagenttel());
+                user.setTel(info.getFtel());
+                user.setAddress(info.getFaddr());
                 DBUtils.getUserService().saveOrUpdate(user);
             }
 
             @Override
-            public void onError(Throwable e) {
-                //统一处理非法账号
+            public void onHttpError(Throwable e) {
+
             }
 
-            @Override
-            public void onComplete() {
-            }
         });
     }
 
@@ -235,5 +238,11 @@ public class MainActivity extends BaseActivity {
         TextView userAccount = view.findViewById(R.id.tx_email);
         userName.setText(user.getFname());
         userAccount.setText(user.getAcount());
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toUserInfo();
+            }
+        });
     }
 }

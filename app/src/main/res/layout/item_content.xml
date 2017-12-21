@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/style_item">
+    <TextView
+        android:id="@+id/tx_key"
+        android:layout_width="wrap_content"
+        android:text="key"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="left|center_vertical"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintRight_toLeftOf="@+id/tx_value"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tx_value"
+        android:layout_width="wrap_content"
+        android:text="value"
+        android:gravity="right|center_vertical"
+        app:layout_constraintLeft_toRightOf="@+id/tx_key"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="match_parent" />
+
+</android.support.constraint.ConstraintLayout>

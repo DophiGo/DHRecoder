@@ -6,12 +6,10 @@
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:listDivider">@drawable/bg_recycle_divider</item>
     </style>
 
-    <style name="FullActivity" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="FullActivity" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
@@ -100,5 +98,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:padding">@dimen/activity_horizontal_margin</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="style_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_height">@dimen/item_hight</item>
+        <item name="android:background">@color/color_ffffff</item>
     </style>
 </resources>

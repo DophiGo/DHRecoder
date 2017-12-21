@@ -1,6 +1,7 @@
 package com.example.user.qrrecoder.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -13,6 +14,7 @@ import com.example.user.qrrecoder.R;
 import com.example.user.qrrecoder.base.BaseActivity;
 import com.example.user.qrrecoder.bean.UserInfoRegist;
 import com.example.user.qrrecoder.http.Enty.HttpResults;
+import com.example.user.qrrecoder.http.retrofit.BaseObserver;
 import com.example.user.qrrecoder.http.retrofit.HttpSend;
 import com.example.user.qrrecoder.utils.HttpErroStringUtils;
 import com.example.user.qrrecoder.utils.StringUtils;
@@ -89,7 +91,7 @@ public class RegistActivity extends BaseActivity {
                 String compnayname=etCompanyname.getText().toString().trim();
                 String compnaytel=etCompanytel.getText().toString().trim();
                 String compnayaddr=etCompanyaddr.getText().toString().trim();
-                UserInfoRegist userInfoRegist=new UserInfoRegist(accounts,code,pwd,name,tel,compnayname,compnaytel,compnayaddr);
+                UserInfoRegist userInfoRegist=new UserInfoRegist(accounts,code,pwd,name,tel,compnayname,compnayaddr,compnaytel);
                 if(userInfoRegist.isEmpty()){
                     ToastUtils.ShowError(context, getString(R.string.error_info_less), 1500, false);
                     return;
@@ -100,53 +102,59 @@ public class RegistActivity extends BaseActivity {
     }
 
     private void CreateUser(UserInfoRegist userInfoRegist){
-        HttpSend.getInstence().CreateUser(userInfoRegist, new Observer<HttpResults>() {
+        HttpSend.getInstence().CreateUser(userInfoRegist, new BaseObserver<HttpResults>() {
+            @Override
+            public void onSuccess(HttpResults httpResults) {
+                ToastUtils.ShowSuccess(context,getString(R.string.rigist_ok));
+                toLoginActivity();
+            }
+
+            @Override
+            public void onHttpError(Throwable e) {
+
+            }
+
             @Override
             public void onSubscribe(Disposable d) {
-                showBaseLoadingDialog(R.string.app_name);
-            }
-
-            @Override
-            public void onNext(HttpResults httpResults) {
-                ToastUtils.ShowSuccess(context,getString(R.string.rigist_ok));
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                String toast= HttpErroStringUtils.getShowStringByException(e);
-                ToastUtils.ShowError(context, toast, 1500, false);
+                showBaseLoadingDialog(R.string.rigist);
             }
 
             @Override
             public void onComplete() {
+                super.onComplete();
                 DissMissLoadingDialog();
             }
         });
     }
 
     private void getEmailCode(String account){
-        HttpSend.getInstence().auth(account, new Observer<HttpResults>() {
+        HttpSend.getInstence().auth(account, new BaseObserver<HttpResults>() {
             @Override
-            public void onSubscribe(Disposable d) {
-                showBaseLoadingDialog(R.string.app_name);
-            }
-
-            @Override
-            public void onNext(HttpResults httpResults) {
+            public void onSuccess(HttpResults httpResults) {
                 ToastUtils.ShowSuccess(context,getString(R.string.code_send_success));
             }
 
             @Override
-            public void onError(Throwable e) {
-                String toast= HttpErroStringUtils.getShowStringByException(e);
-                ToastUtils.ShowError(context, toast, 1500, false);
+            public void onHttpError(Throwable e) {
+
+            }
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                showBaseLoadingDialog(R.string.send_email_code);
             }
 
             @Override
             public void onComplete() {
+                super.onComplete();
                 DissMissLoadingDialog();
             }
         });
+    }
+
+    private void toLoginActivity() {
+        toLogin();
+        finish();
     }
 
 }

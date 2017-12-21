@@ -1,6 +1,7 @@
 package com.example.user.qrrecoder.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -11,6 +12,12 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.user.qrrecoder.R;
+import com.example.user.qrrecoder.activity.LoginActivity;
+import com.example.user.qrrecoder.app.MyApp;
+import com.example.user.qrrecoder.app.SPKey;
+import com.example.user.qrrecoder.data.greendao.User;
+import com.example.user.qrrecoder.utils.SharedPrefreUtils;
+import com.example.user.qrrecoder.utils.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hdl.elog.ELog;
 
@@ -32,6 +39,7 @@ public abstract class BaseActivity extends BaseCoreActivity {
         context = this;
         setContentView(getConstomLayout());
         initToolBar();
+
     }
 
     @Override
@@ -64,26 +72,7 @@ public abstract class BaseActivity extends BaseCoreActivity {
 
     protected abstract int getConstomLayout();
 
-    private MaterialDialog.Builder builder;
-    private MaterialDialog dialog;
 
-    public void showBaseLoadingDialog(@StringRes int title, @StringRes int contant) {
-        builder = new MaterialDialog.Builder(this)
-                .title(title)
-                .content(contant)
-                .progress(true, 0);
-        dialog=builder.build();
-        dialog.show();
-    }
-
-    public void showBaseLoadingDialog(@StringRes int contant) {
-        showBaseLoadingDialog(R.string.app_name, contant);
-    }
-    public void DissMissLoadingDialog(){
-        if(dialog!=null){
-            dialog.dismiss();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -115,5 +104,10 @@ public abstract class BaseActivity extends BaseCoreActivity {
     @Override
     public boolean destroyBar() {
         return false;
+    }
+
+    @Override
+    public void clearLoginData() {
+        SharedPrefreUtils.getInstance().putBooleanData(context, SPKey.SP_ISLOGIN,false);
     }
 }

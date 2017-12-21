@@ -71,7 +71,7 @@ public class HttpError {
      */
     public static final String ERROR_801011007 = "801011007";
     /**
-     * 缺省
+     * 验证码错误
      */
     public static final String ERROR_801011008 = "801011008";
     /**
@@ -90,4 +90,9 @@ public class HttpError {
      * 升级包信息不存在
      */
     public static final String ERROR_801011012 = "801011012";
+    /**
+     * 设备未解绑
+     */
+    public static final String ERROR_801003007 = "801003007";
+
 }

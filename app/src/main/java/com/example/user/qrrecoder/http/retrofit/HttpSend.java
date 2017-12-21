@@ -1,5 +1,6 @@
 package com.example.user.qrrecoder.http.retrofit;
 
+import com.example.user.qrrecoder.app.APPConfig;
 import com.example.user.qrrecoder.app.MyApp;
 import com.example.user.qrrecoder.bean.UserInfoRegist;
 import com.example.user.qrrecoder.entity.UploadRecords;
@@ -35,7 +36,7 @@ public class HttpSend {
     //APP地址
     private final static String BASEURL = "http://oss.zhiduodev.com/oss/app/operator/";
     //解绑地址
-    private final static String BASEURL_UNBIND = "http://api.zhiduodev.com/trader/unbind/";
+    private final static String BASEURL_UNBIND = "http://api.zhiduodev.com/";
 
     private static class HtpSendHolder {
         public static final HttpSend INSTENCE = new HttpSend();
@@ -51,9 +52,9 @@ public class HttpSend {
 
     ClearableCookieJar cookieJar;
 
-    public void login(String userName, String userPwd, Observer<LoginResult> observer) {
+    public void login(String userName, String userPwd, BaseObserver<LoginResult> observer) {
         ApiService service=getService();
-        userPwd = new MD5().getMD5ofStr(userPwd);
+        userPwd = entryPwd(userPwd);
         service.login(userName, userPwd)
                 .map(new HttpResultFunc())
                 .subscribeOn(Schedulers.io())
@@ -119,7 +120,7 @@ public class HttpSend {
                 .subscribe(observer);
     }
 
-    public void getInfo(String token, Observer<Info> observer) {
+    public void getInfo(String token, BaseObserver<Info> observer) {
         ApiService service=getService();
         service.getUserInfo(token)
                 .map(new HttpResultFunc())
@@ -134,10 +135,26 @@ public class HttpSend {
      * @param account  账户（邮箱）
      * @param observer
      */
-    public void getCode(String account, Observer<HttpResults> observer) {
+    public void getCode(String account, BaseObserver<HttpResults> observer) {
         ApiService service=getService();
         service.getCode(account)
-                .map(new HttpResultFunc())
+                .map(new HttpResultNoneDataFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取找回密码验证码
+     *
+     * @param account  账户（邮箱）
+     * @param observer
+     */
+    public void forgetPwd(String account,String code,String pwd, BaseObserver<HttpResults> observer) {
+        ApiService service=getService();
+        pwd=entryPwd(pwd);
+        service.forgetPwd(account,code,pwd)
+                .map(new HttpResultNoneDataFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
@@ -149,10 +166,10 @@ public class HttpSend {
      * @param account  账户（邮箱）
      * @param observer
      */
-    public void auth(String account, Observer<HttpResults> observer) {
+    public void auth(String account, BaseObserver<HttpResults> observer) {
         ApiService service=getService();
         service.auth(account)
-                .map(new HttpResultFunc())
+                .map(new HttpResultNoneDataFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
@@ -164,18 +181,56 @@ public class HttpSend {
      * @param account  账号信息
      * @param observer
      */
-    public void CreateUser(UserInfoRegist account, Observer<HttpResults> observer) {
+    public void CreateUser(UserInfoRegist account, BaseObserver<HttpResults> observer) {
         ApiService service=getService();
-        String pwd=new MD5().getMD5ofStr(account.getPwd());
+        String pwd=entryPwd(account.getPwd());
         service.create(account.getAccount(), account.getEmailcode()
                 , pwd, account.getName(), account.getTel(), account.getAgent(), account.getAddr(), account.getAgenttel())
-                .map(new HttpResultFunc())
+                .map(new HttpResultNoneDataFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
+    /**
+     * 重置密码
+     * @param token
+     * @param oldPwd
+     * @param newpwd
+     * @param observer
+     */
+    public void resetPwd(String token,String oldPwd, String newpwd,BaseObserver<HttpResults> observer) {
+        ApiService service=getService();
+        String old=entryPwd(oldPwd);
+        String newp=entryPwd(newpwd);
+        service.resetpwd(token,old,newp)
+                .map(new HttpResultNoneDataFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 解绑设备
+     * @param token
+     * @param deviceid 设备ID
+     * @param observer
+     */
+    public void unbindDevice(String token, String deviceid,BaseObserver<HttpResults> observer) {
+        ApiService service=getService(BASEURL_UNBIND);
+        service.unbindevice(APPConfig.Release.UNBIND_KEY,deviceid,token)
+                .map(new HttpResultNoneDataFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+
     private ApiService getService(){
+        return getService(BASEURL);
+    }
+
+    private ApiService getService(String url){
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // Log信息拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -190,12 +245,16 @@ public class HttpSend {
                 .cookieJar(cookieJar);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASEURL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(builder.build())
                 .build();
 
         return retrofit.create(ApiService.class);
+    }
+
+    private String entryPwd(String pwd){
+        return new MD5().getMD5ofStr(pwd);
     }
 }

@@ -3,6 +3,7 @@ package com.example.user.qrrecoder.utils;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.example.user.qrrecoder.BuildConfig;
 import com.example.user.qrrecoder.app.MyApp;
 
 /**
@@ -13,14 +14,6 @@ import com.example.user.qrrecoder.app.MyApp;
 public class AppUtils {
 
     public static String getAppVersion(){
-        PackageInfo packageInfo = null;
-        try {
-            packageInfo = MyApp.app.getPackageManager()
-                    .getPackageInfo(MyApp.app.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "1.0.0";
-        }
+        return BuildConfig.VERSION_NAME;
     }
 }

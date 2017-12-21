@@ -20,6 +20,7 @@ import com.example.user.qrrecoder.data.greendaoauto.UserDao;
 import com.example.user.qrrecoder.data.greendaoutil.DBUtils;
 import com.example.user.qrrecoder.eventbus.eventbusaction.UserAction;
 import com.example.user.qrrecoder.http.Enty.LoginResult;
+import com.example.user.qrrecoder.http.retrofit.BaseObserver;
 import com.example.user.qrrecoder.http.retrofit.HttpSend;
 import com.example.user.qrrecoder.utils.HttpErroStringUtils;
 import com.example.user.qrrecoder.utils.SharedPrefreUtils;
@@ -102,21 +103,16 @@ public class LoginActivity extends BaseFullScreenActivity {
 
     private void Login(final String account, final String pwd) {
         final MaterialDialog dialog = builder.build();
-        HttpSend.getInstence().login(account, pwd, new Observer<LoginResult>() {
+        HttpSend.getInstence().login(account, pwd, new BaseObserver<LoginResult>() {
             @Override
-            public void onSubscribe(Disposable d) {
-                dialog.show();
-            }
-
-            @Override
-            public void onNext(LoginResult loginResult) {
+            public void onSuccess(LoginResult result) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 User user = new User();
-                user.setAcount(loginResult.getFaccount());
+                user.setAcount(result.getFaccount());
                 user.setUserpwd(pwd);
-                user.setFname(loginResult.getFname());
-                user.setToken(loginResult.getFtoken());
+                user.setFname(result.getFname());
+                user.setToken(result.getFtoken());
                 SharedPrefreUtils.getInstance().putStringData(mContext, SPKey.SP_ACTIVEUSER, user.getAcount());
                 SharedPrefreUtils.getInstance().putBooleanData(mContext, SPKey.SP_ISLOGIN, true);
                 DBUtils.getUserService().saveOrUpdate(user);
@@ -125,10 +121,12 @@ public class LoginActivity extends BaseFullScreenActivity {
             }
 
             @Override
-            public void onError(Throwable e) {
-                dialog.dismiss();
-                String toast = HttpErroStringUtils.getShowStringByException(e);
-                ToastUtils.ShowError(mContext, toast, APPConfig.Release.DEFAULT_TOAST_ERROR_TIME, true);
+            public void onHttpError(Throwable e) {
+            }
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                dialog.show();
             }
 
             @Override

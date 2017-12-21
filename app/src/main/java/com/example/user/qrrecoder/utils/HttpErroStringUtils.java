@@ -42,6 +42,8 @@ public class HttpErroStringUtils {
                 return MyApp.app.getString(R.string.http_er_801011006);
             case HttpError.ERROR_801011007:
                 return MyApp.app.getString(R.string.http_er_801011007);
+            case HttpError.ERROR_801011008:
+                return MyApp.app.getString(R.string.http_er_801011008);
             case HttpError.ERROR_801011009:
                 return MyApp.app.getString(R.string.http_er_801011009);
             case HttpError.ERROR_801011010:
@@ -50,6 +52,8 @@ public class HttpErroStringUtils {
                 return MyApp.app.getString(R.string.http_er_801011011);
             case HttpError.ERROR_801011012:
                 return MyApp.app.getString(R.string.http_er_801011012);
+            case HttpError.ERROR_801003007:
+                return MyApp.app.getString(R.string.http_er_801003007);
             default:
                 return MyApp.app.getString(R.string.http_er)+"("+error+")";
         }

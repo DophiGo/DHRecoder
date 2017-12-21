@@ -1,11 +1,16 @@
 package com.example.user.qrrecoder.activity;
 
+import android.bluetooth.BluetoothClass;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.user.qrrecoder.R;
 import com.example.user.qrrecoder.app.MyApp;
 import com.example.user.qrrecoder.base.BaseFullScreenActivity;
@@ -13,8 +18,13 @@ import com.example.user.qrrecoder.data.greendao.DeviceItem;
 import com.example.user.qrrecoder.data.greendao.User;
 import com.example.user.qrrecoder.data.greendaoauto.DeviceItemDao;
 import com.example.user.qrrecoder.data.greendaoutil.DBUtils;
+import com.example.user.qrrecoder.entity.DeviceInfo;
+import com.example.user.qrrecoder.http.Enty.HttpResults;
+import com.example.user.qrrecoder.http.retrofit.BaseObserver;
+import com.example.user.qrrecoder.http.retrofit.HttpSend;
 import com.example.user.qrrecoder.utils.DeviceUtils;
 import com.example.user.qrrecoder.utils.MusicUtils;
+import com.example.user.qrrecoder.utils.StringUtils;
 import com.example.user.qrrecoder.utils.ToastUtils;
 import com.hdl.elog.ELog;
 
@@ -25,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zbar.ZBarView;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by USER on 2017/11/10.
@@ -36,7 +47,6 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     ZBarView zbarview;
     @BindView(R.id.btn_stop)
     ImageView btnStop;
-    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,11 +54,6 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
         setContentView(R.layout.activity_zbar);
         ButterKnife.bind(this);
         initZbar();
-        user = MyApp.getActiveUser();
-        if (user == null) {
-            ToastUtils.ShowError(this, getString(R.string.user_info_error), 1500, true);
-            toLogin();
-        }
     }
 
     private void initZbar() {
@@ -65,15 +70,83 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
 
     @Override
     public void onScanQRCodeSuccess(String result) {
+        vibrate();
         zbarview.startSpotDelay(800);
         try {
-
+            DeviceInfo info=CreateDeviceItem(result);
+            showUnBindDialog(info);
         } catch (Exception e) {
             e.printStackTrace();
             //二维码不正确
             ToastUtils.ShowError(this, getErrorQR(result), 1500, true);
         }
     }
+
+    private void showUnBindDialog(final DeviceInfo info){
+        if(TextUtils.isEmpty(info.getDeviceID())){
+            //二维码不正确
+            ToastUtils.ShowError(this, info.getQrContents(), 1500, true);
+            return;
+        }
+        new MaterialDialog.Builder(this)
+                .title(R.string.unbind)
+                .content(StringUtils.getFormat(getString(R.string.unbind_tips),info.getDeviceID()))
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        unbindDevice(info);
+                    }
+                })
+                .show();
+    }
+
+    //解绑设备
+    private void unbindDevice(final DeviceInfo info){
+        HttpSend.getInstence().unbindDevice(activeUser.getToken(), info.getDeviceID(), new BaseObserver<HttpResults>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                super.onSubscribe(d);
+                showBaseLoadingDialog(R.string.unbind);
+            }
+
+            @Override
+            public void onSuccess(HttpResults httpResults) {
+                showUnbindSuccess(info);
+            }
+
+            @Override
+            public void onHttpError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                DissMissLoadingDialog();
+            }
+        });
+    }
+
+    //解绑成功
+    private void showUnbindSuccess(DeviceInfo info){
+        String toast=StringUtils.getFormat(getString(R.string.unbind_success),info.getDeviceID());
+        new MaterialDialog.Builder(this)
+                .title(R.string.unbind)
+                .content(toast)
+                .positiveText(R.string.scan)
+                .negativeText(R.string.ok)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      //Empty
+                    }
+                })
+                .show();
+    }
+
+
 
     private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -90,13 +163,6 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
         musictils.playPoolMusic();
     }
 
-    private int getUnUploadRecord() {
-        QueryBuilder<DeviceItem> queryBuilder = DBUtils.getDeviceItemService().queryBuilder();
-        queryBuilder.where(DeviceItemDao.Properties.Faccount.eq(user.getAcount()));
-        queryBuilder.where(DeviceItemDao.Properties.ServerState.eq(0));
-        return queryBuilder.list().size();
-    }
-
     @Override
     public void onScanQRCodeOpenCameraError() {
         ELog.dxs("打开相机出错");
@@ -107,16 +173,8 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     }
 
     //扫码得到的信息创建设备(会抛异常)
-    private DeviceItem CreateDeviceItem(String deviceInfo) {
-        long time = System.currentTimeMillis();
-        String[] info = DeviceUtils.getDeviceInfoFromeUrl(deviceInfo);
-        DeviceItem item = new DeviceItem();
-        item.setDeviceuuid(info[0]);
-        item.setDeviceid(Integer.parseInt(info[1]));
-        item.setScantime(time);
-        item.setUserid(user.getUserid());
-        item.setFaccount(user.getAcount());
-        return item;
+    private DeviceInfo CreateDeviceItem(String deviceInfo) {
+        return new DeviceInfo(deviceInfo);
     }
 
     //拼接不正确二维码提示("不正确的二维码(result)")
