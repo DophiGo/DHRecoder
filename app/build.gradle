@@ -3,7 +3,7 @@ apply plugin: 'org.greenrobot.greendao'
 
 ext {
     surpportlib = '27.0.2'
-    versionname = '1.0.9'
+    versionname = '1.0.3'
 }
 
 android {

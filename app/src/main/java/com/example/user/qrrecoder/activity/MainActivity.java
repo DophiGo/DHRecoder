@@ -105,6 +105,11 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserInfo(activeUser);
+    }
 
     @Override
     public void setToolBarNavigation() {
@@ -115,8 +120,6 @@ public class MainActivity extends BaseActivity {
     @Subscribe(sticky = true)
     public void onUserLoginSuccess(UserAction userAction) {
         updateUiInfo(userAction.getUser());
-        Log.e("dxsTest", "onUserLoginSuccess:" + userAction.getUser().toString());
-        getUserInfo(userAction.getUser());
     }
 
     @OnClick({R.id.btn_scan})
