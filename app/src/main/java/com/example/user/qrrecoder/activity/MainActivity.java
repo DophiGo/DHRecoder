@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.DragEvent;
@@ -109,17 +110,13 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getUserInfo(activeUser);
+        updateUiInfo(activeUser);
     }
 
     @Override
     public void setToolBarNavigation() {
         //不需要返回箭头
         toolbar.setContentInsetsAbsolute(SizeUtils.dp2px(TOOLBAR_MARGING), 0);
-    }
-
-    @Subscribe(sticky = true)
-    public void onUserLoginSuccess(UserAction userAction) {
-        updateUiInfo(userAction.getUser());
     }
 
     @OnClick({R.id.btn_scan})

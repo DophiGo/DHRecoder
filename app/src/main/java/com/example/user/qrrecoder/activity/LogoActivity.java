@@ -87,6 +87,5 @@ public class LogoActivity extends BaseActivity {
         Intent main = new Intent(this, MainActivity.class);
 //        startActivity(main);
         startActivity(main, ActivityOptions.makeSceneTransitionAnimation(this,ivLogo,getString(R.string.share_logo)).toBundle());
-        EventBus.getDefault().postSticky(new UserAction(user));
     }
 }
