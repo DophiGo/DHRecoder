@@ -80,3 +80,10 @@ public static java.lang.String TABLENAME;
 
 # special
 -dontwarn freemarker.**
+
+# eventbus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
