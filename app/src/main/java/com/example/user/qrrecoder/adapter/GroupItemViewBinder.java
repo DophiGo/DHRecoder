@@ -30,6 +30,7 @@ public class GroupItemViewBinder extends ItemViewBinder<ItemTitle,GroupItemViewB
     protected void onBindViewHolder(@NonNull GroupItemViewBinder.ViewHolder holder, @NonNull ItemTitle item) {
         holder.textKey.setText(item.getKey());
         holder.textValue.setText(item.getValue());
+        holder.textValue.setTextColor(holder.textValue.getContext().getResources().getColor(R.color.color_a1a1a1));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
