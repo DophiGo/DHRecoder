@@ -25,9 +25,24 @@
 -keep public class com.tencent.bugly.**{*;}
 -keep class android.support.**{*;}
 
-#retrofit
--dontwarn okio.**
+# Retrofit
+-dontnote retrofit2.Platform
+-dontnote retrofit2.Platform$IOS$MainThreadExecutor
+-dontwarn retrofit2.Platform$Java8
 -dontwarn javax.annotation.**
+-keepattributes Signature
+-keepattributes Exceptions
+
+#okhttp
+-dontwarn okhttp3.**
+-keep class okhttp3.**{*;}
+
+#okio
+-dontwarn okio.**
+-keep class okio.**{*;}
+
+# Gson
+-keep class com.example.user.qrrecoder.http.Enty.**{*;} # 自定义数据模型的bean目录
 
 #greendao
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
@@ -39,3 +54,29 @@ public static java.lang.String TABLENAME;
 -dontwarn org.greenrobot.greendao.database.**
 # If you do not use Rx:
 -dontwarn rx.**
+
+# Butterknife
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+
+# Android
+-keep public class * extends android.app.Fragment
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.support.v4.**
+-keep public class * extends android.support.annotation.**
+-keep public class * extends android.support.v7.**
+
+# special
+-dontwarn freemarker.**
