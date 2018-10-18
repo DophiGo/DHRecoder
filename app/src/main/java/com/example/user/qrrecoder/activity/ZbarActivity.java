@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
-import cn.bingoogolapple.qrcode.zbar.ZBarView;
+import cn.bingoogolapple.qrcode.zxing.ZXingView;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -44,7 +44,7 @@ import io.reactivex.disposables.Disposable;
 public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.Delegate {
     private final static String FORMAT_TOAST = "扫描成功\n设备ID:%s\n设备序列号:%s";
     @BindView(R.id.zbarview)
-    ZBarView zbarview;
+    ZXingView zbarview;
     @BindView(R.id.btn_stop)
     ImageView btnStop;
 
