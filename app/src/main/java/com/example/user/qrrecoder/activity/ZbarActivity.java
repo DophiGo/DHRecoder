@@ -33,6 +33,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bingoogolapple.qrcode.core.BarcodeType;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 import io.reactivex.disposables.Disposable;
@@ -63,8 +64,9 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     private void starCamer() {
         zbarview.startSpotDelay(800);
         zbarview.startCamera();
-//        zbarview.startCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
-        zbarview.showScanRect();
+        zbarview.changeToScanQRCodeStyle();
+        zbarview.setType(BarcodeType.ONLY_QR_CODE, null);
+        zbarview.startSpotAndShowRect();
     }
 
 
