@@ -62,7 +62,6 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     }
 
     private void starCamer() {
-        zbarview.startSpotDelay(800);
         zbarview.startCamera();
         zbarview.changeToScanQRCodeStyle();
         zbarview.setType(BarcodeType.ONLY_QR_CODE, null);
