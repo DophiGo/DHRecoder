@@ -3,7 +3,7 @@ apply plugin: 'org.greenrobot.greendao'
 
 ext {
     surpportlib = '27.0.2'
-    versionname = '1.0.10'
+    versionname = '1.0.11'
 }
 
 android {
@@ -12,7 +12,7 @@ android {
         applicationId "com.xiaotun.qrrecoder"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 10
+        versionCode 11
         versionName versionname
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
