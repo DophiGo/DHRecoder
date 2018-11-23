@@ -12,6 +12,7 @@ import com.example.user.qrrecoder.data.greendao.User;
 import com.example.user.qrrecoder.http.Enty.HttpResults;
 import com.example.user.qrrecoder.http.retrofit.BaseObserver;
 import com.example.user.qrrecoder.http.retrofit.HttpSend;
+import com.example.user.qrrecoder.utils.StringUtils;
 import com.example.user.qrrecoder.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -60,6 +61,10 @@ public class ResetPwdActivity extends BaseActivity {
         }
         if(TextUtils.isEmpty(pwd)||TextUtils.isEmpty(pwdAgen)||!pwd.equals(pwdAgen)){
             ToastUtils.ShowError(context,getString(R.string.pwd_not),1500,true);
+            return;
+        }
+        if(StringUtils.isWeakPassword(pwd)){
+            ToastUtils.ShowError(context, getString(R.string.pwd_format), 1500, false);
             return;
         }
         resetPwd(activeUser,oldPwd,pwdAgen);

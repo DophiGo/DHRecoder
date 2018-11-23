@@ -1,5 +1,7 @@
 package com.example.user.qrrecoder.http.retrofit;
 
+import android.content.Context;
+
 import com.example.user.qrrecoder.app.APPConfig;
 import com.example.user.qrrecoder.app.MyApp;
 import com.example.user.qrrecoder.bean.UserInfoRegist;
@@ -8,19 +10,26 @@ import com.example.user.qrrecoder.http.Enty.HttpResults;
 import com.example.user.qrrecoder.http.Enty.Info;
 import com.example.user.qrrecoder.http.Enty.LoginResult;
 import com.example.user.qrrecoder.http.api.ApiService;
+import com.example.user.qrrecoder.http.utils.DHRegistrant;
+import com.example.user.qrrecoder.http.utils.DHSharedPrefreUtils;
 import com.example.user.qrrecoder.utils.MD5;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -231,7 +240,8 @@ public class HttpSend {
     }
 
     private ApiService getService(String url){
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(httpInterceptor);
         // Log信息拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);//这里可以选择拦截级别
@@ -256,5 +266,44 @@ public class HttpSend {
 
     private String entryPwd(String pwd){
         return new MD5().getMD5ofStr(pwd);
+    }
+
+    /**
+     * 创建拦截器
+     */
+    private Interceptor httpInterceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = addPublicParameter(chain.request());
+            Response response = chain.proceed(request);
+            return response;
+        }
+
+    };
+
+    /**
+     * 给拦截器request路径添加公共参数
+     *
+     * @param request
+     * @return
+     */
+    private Request addPublicParameter(Request request) {
+        HttpUrl.Builder builder = request
+                .url()
+                .newBuilder()
+//                .addEncodedQueryParameter("fappversion", DHSharedPrefreUtils.getInstance()
+//                        .getStringData(MyApp.app, DHRegistrant.HTTP_FAPPVERSION))//APP 版本 如:1.0.0
+//                .addEncodedQueryParameter("fipaddr", DHSharedPrefreUtils.getInstance().
+//                        getStringData(MyApp.app, DHRegistrant.HTTP_FIPADDR))//手机IP地址
+                .addEncodedQueryParameter("fplatform", "1")//APP手机类型 0 iOS 1 安卓
+                .addEncodedQueryParameter("fpkname", MyApp.app.getPackageName())//APP 包名
+                .addEncodedQueryParameter("fapplan", DHSharedPrefreUtils.getCountryLanguage(MyApp.app));//APP 当前语言
+
+        Request newRequest = request
+                .newBuilder()
+                .method(request.method(), request.body())
+                .url(builder.build())
+                .build();
+        return newRequest;
     }
 }

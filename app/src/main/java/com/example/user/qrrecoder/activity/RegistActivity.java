@@ -96,6 +96,10 @@ public class RegistActivity extends BaseActivity {
                     ToastUtils.ShowError(context, getString(R.string.error_info_less), 1500, false);
                     return;
                 }
+                if (StringUtils.isWeakPassword(pwd)) {
+                    ToastUtils.ShowError(context, getString(R.string.pwd_format), 1500, false);
+                    return;
+                }
                 CreateUser(userInfoRegist);
                 break;
         }

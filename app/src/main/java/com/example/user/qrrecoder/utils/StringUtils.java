@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
  */
 
 public class StringUtils {
+
+    private static String WEAK = "^[1-9]\\d*$|^[A-Z]+$|^[a-z]+$|^(.)\\1+$";
+
     public static boolean isEmail(String email) {
         return isMatch(RegexConstants.REGEX_EMAIL, email);
     }
@@ -44,5 +47,15 @@ public class StringUtils {
 
     public static String getFormat(String src, Object... parems) {
         return String.format(src, parems);
+    }
+
+    /**
+     * 判断是否是弱密码
+     *
+     * @param password 密码
+     * @return
+     */
+    public static boolean isWeakPassword(String password) {
+        return (password.length() < 6 || password.length() > 18 || password.matches(WEAK));
     }
 }
