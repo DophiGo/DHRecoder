@@ -17,6 +17,7 @@ public class IntentUtis {
     public static void toWebBroser(String url){
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         MyApp.app.startActivity(intent);
     }
 }

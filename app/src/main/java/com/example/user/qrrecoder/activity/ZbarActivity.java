@@ -72,7 +72,7 @@ public class ZbarActivity extends BaseFullScreenActivity implements QRCodeView.D
     @Override
     public void onScanQRCodeSuccess(String result) {
         vibrate();
-        zbarview.startSpotDelay(800);
+        zbarview.startSpotDelay(2000);
         try {
             DeviceInfo info=CreateDeviceItem(result);
             showUnBindDialog(info);
